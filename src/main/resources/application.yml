@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: notes-api
+
+  # MySQL Database
+  datasource:
+    url: jdbc:mysql://localhost:3306/notesdb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: 8081
+
+# JWT Configuration (Base64 encoded)
+jwt:
+  secret: bXlTZWNyZXRLZXlGb3JKd3RUb2tlbkdlbmVyYXRpb25NdXN0QmVMb25nRW5vdWdoMjAyNE5vdGVzQXBwU2VjcmV0S2V5
+  expiration: 86400000  # 24 hours in milliseconds
+
+# CORS
+app:
+  cors:
+    allowed-origins: "*"
