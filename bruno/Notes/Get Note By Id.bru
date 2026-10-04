@@ -1,0 +1,19 @@
+meta {
+  name: Get Note By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/notes/{{noteId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Get one note by id. Change `noteId` collection/environment variable as needed. Response includes `latitude`/`longitude`/`locationName` (null when no location attached).
+}

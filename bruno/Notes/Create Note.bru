@@ -1,0 +1,39 @@
+meta {
+  name: Create Note
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/notes
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Mi primera nota",
+    "content": "Contenido de prueba desde Bruno",
+    "latitude": 4.71111,
+    "longitude": -74.07222,
+    "locationName": "Chapinero, Bogotá"
+  }
+}
+
+script:post-response {
+  if (res.body.id) {
+    bru.setVar("noteId", res.body.id);
+  }
+}
+
+docs {
+  Create a note. `title` is required. `latitude`/`longitude`/`locationName` are optional (null to omit). Note id is auto-saved to `noteId` variable.
+}

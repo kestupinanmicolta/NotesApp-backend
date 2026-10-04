@@ -1,0 +1,19 @@
+meta {
+  name: Delete Note
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/api/notes/{{noteId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Delete a note by id (including its stored location). Returns 204 No Content on success.
+}

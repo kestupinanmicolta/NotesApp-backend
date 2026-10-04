@@ -1,0 +1,19 @@
+meta {
+  name: Get All Notes
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/notes
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Get all notes of the authenticated user. Requires Bearer JWT. Each note includes `latitude`/`longitude`/`locationName` (null when no location attached).
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "testuser@example.com",
+    "password": "password123"
+  }
+}
+
+script:post-response {
+  if (res.body.token) {
+    bru.setVar("token", res.body.token);
+  }
+}
+
+docs {
+  Login with email + password. Returns JWT token. Token is auto-saved to collection variable `token`.
+}

@@ -36,7 +36,7 @@
 **Seguridad:**
 - Endpoints públicos: `/api/auth/*`
 - Endpoints protegidos: `/api/notes/*`
-- CORS configurado para desarrollo (localhost:3000, 10.0.2.2:8080)
+- CORS abierto (`*`) para desarrollo
 
 ## 3. Persistencia: Spring Data JPA
 
@@ -47,32 +47,35 @@
 - Múltiples implementaciones (Hibernate, EclipseLink)
 
 **Configuración:**
-- H2 en memoria para desarrollo
-- MySQL para producción
+- MySQL en `notesdb` por defecto (`application.yml`, usuario/clave configurables)
 - Auto-generación de esquema (`spring.jpa.hibernate.ddl-auto=update`)
+- H2 disponible como dependencia para pruebas locales
 
 **Entidades:**
-- `User`: ID, username, password, timestamp
-- `Note`: ID, title, content, userId, timestamp, isPendingSync
+- `User`: ID, email (único, identidad de login), password, timestamp
+- `Note`: ID, title, content, userId, latitude/longitude/locationName, timestamps
 
 ## 4. Base de Datos
 
-### Desarrollo (H2)
-- Base de datos en memoria
-- Consola web habilitada (`/h2-console`)
-- Sin configuración adicional necesaria
+### Desarrollo local (MySQL)
+- Base `notesdb` (se crea sola con `createDatabaseIfNotExist=true`)
+- Sin configuración adicional más allá de usuario/clave en `application.yml`
 
-### Producción (MySQL)
-- Perfil `mysql` activado via `SPRING_PROFILES_ACTIVE`
-- Configuración via variables de entorno
-- Connection pooling con HikariCP
+### Variables de entorno (ejemplo)
+```bash
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/notesdb
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=secret
+JWT_SECRET=tu-clave-en-base64
+```
 
 ## 5. Manejo de Errores
 
 **Excepciones globales:**
 - `GlobalExceptionHandler` captura todas las excepciones
-- Respuestas consistentes con formato JSON
-- Códigos HTTP apropiados (400, 401, 404, 500)
+- Respuestas consistentes con formato JSON y mensajes en español
+- Códigos HTTP apropiados (400, 401, 404, 409, 500)
+- Sin fuga de detalles técnicos (SQL/stacktraces solo en el log del servidor)
 
 **Validación:**
 - Bean Validation en DTOs
@@ -82,8 +85,7 @@
 ## 6. Configuración
 
 **Archivos:**
-- `application.yml`: Configuración principal (H2, JWT, CORS)
-- `application-mysql.yml`: Configuración MySQL (producción)
+- `application.yml`: Configuración principal (MySQL, JWT, CORS)
 
 **Variables de entorno para producción:**
 ```bash

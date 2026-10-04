@@ -19,8 +19,8 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
 
-    public List<NoteResponse> getNotesByUser(String username) {
-        User user = userRepository.findByUsername(username)
+    public List<NoteResponse> getNotesByUser(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return noteRepository.findByUserIdOrderByUpdatedAtDesc(user.getId())
@@ -29,8 +29,8 @@ public class NoteService {
                 .collect(Collectors.toList());
     }
 
-    public NoteResponse getNoteById(Long id, String username) {
-        User user = userRepository.findByUsername(username)
+    public NoteResponse getNoteById(Long id, String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Note note = noteRepository.findById(id)
@@ -43,13 +43,16 @@ public class NoteService {
         return toResponse(note);
     }
 
-    public NoteResponse createNote(NoteRequest request, String username) {
-        User user = userRepository.findByUsername(username)
+    public NoteResponse createNote(NoteRequest request, String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Note note = Note.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .locationName(request.getLocationName())
                 .user(user)
                 .build();
 
@@ -57,8 +60,8 @@ public class NoteService {
         return toResponse(saved);
     }
 
-    public NoteResponse updateNote(Long id, NoteRequest request, String username) {
-        User user = userRepository.findByUsername(username)
+    public NoteResponse updateNote(Long id, NoteRequest request, String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Note note = noteRepository.findById(id)
@@ -70,13 +73,16 @@ public class NoteService {
 
         note.setTitle(request.getTitle());
         note.setContent(request.getContent());
+        note.setLatitude(request.getLatitude());
+        note.setLongitude(request.getLongitude());
+        note.setLocationName(request.getLocationName());
 
         Note updated = noteRepository.save(note);
         return toResponse(updated);
     }
 
-    public void deleteNote(Long id, String username) {
-        User user = userRepository.findByUsername(username)
+    public void deleteNote(Long id, String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Note note = noteRepository.findById(id)
@@ -95,6 +101,9 @@ public class NoteService {
         response.setTitle(note.getTitle());
         response.setContent(note.getContent());
         response.setUserId(note.getUser().getId());
+        response.setLatitude(note.getLatitude());
+        response.setLongitude(note.getLongitude());
+        response.setLocationName(note.getLocationName());
         response.setCreatedAt(note.getCreatedAt());
         response.setUpdatedAt(note.getUpdatedAt());
         return response;

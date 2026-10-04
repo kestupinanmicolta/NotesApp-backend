@@ -1,0 +1,33 @@
+meta {
+  name: Clear Note Location
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/notes/{{noteId}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Nota sin ubicación",
+    "content": "Ubicación eliminada desde Bruno",
+    "latitude": null,
+    "longitude": null,
+    "locationName": null
+  }
+}
+
+docs {
+  Remove the location from a note by sending `latitude`/`longitude` as null. Title and content are still required.
+}

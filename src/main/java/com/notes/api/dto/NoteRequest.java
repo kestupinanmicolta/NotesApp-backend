@@ -14,4 +14,10 @@ public class NoteRequest {
     private String title;
 
     private String content;
+
+    private Double latitude;
+
+    private Double longitude;
+
+    private String locationName;
 }

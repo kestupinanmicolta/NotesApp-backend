@@ -22,41 +22,34 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(AuthRequest request) {
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
-            throw new IllegalArgumentException("Email is required for registration");
-        }
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Username already exists");
-        }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new IllegalArgumentException("El correo electrónico ya está registrado.");
         }
 
         User user = User.builder()
-                .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         userRepository.save(user);
 
-        String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token, user.getUsername(), "Registration successful", user.getId());
+        String token = jwtService.generateToken(user.getEmail());
+        return new AuthResponse(token, user.getEmail(), "Registration successful", user.getId());
     }
 
     public AuthResponse login(AuthRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + request.getUsername()));
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + request.getEmail()));
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Contraseña incorrecta para el usuario: " + request.getUsername());
+            throw new BadCredentialsException("Contraseña incorrecta para el usuario: " + request.getEmail());
         }
 
-        String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token, user.getUsername(), "Login successful", user.getId());
+        String token = jwtService.generateToken(user.getEmail());
+        return new AuthResponse(token, user.getEmail(), "Login successful", user.getId());
     }
 }

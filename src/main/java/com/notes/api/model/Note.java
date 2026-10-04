@@ -26,6 +26,15 @@ public class Note {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = true)
+    private Double latitude;
+
+    @Column(nullable = true)
+    private Double longitude;
+
+    @Column(name = "location_name", length = 255)
+    private String locationName;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

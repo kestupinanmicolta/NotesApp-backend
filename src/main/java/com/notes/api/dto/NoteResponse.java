@@ -14,6 +14,9 @@ public class NoteResponse {
     private String title;
     private String content;
     private Long userId;
+    private Double latitude;
+    private Double longitude;
+    private String locationName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
